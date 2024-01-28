@@ -58,11 +58,9 @@ class CLALoss(nn.Module):
     def kmeans(self,out):
 
         cluster_labels,_ = KMeans(X=out, num_clusters=self.K, distance='euclidean', device=out.device).long().to(out.device)
-        # 对cluster_centers_重排，从0开始
 
 
         # cluster_centers = torch.from_numpy(cluster_labels).to(out.device)
-        # 对cluster_centers_重排，从0开始
         # _, cluster_centers = torch.unique(cluster_centers, sorted=True, return_inverse=True, dim=0)
 
         return cluster_labels
