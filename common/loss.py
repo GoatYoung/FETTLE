@@ -73,6 +73,7 @@ class CLALoss(nn.Module):
 
         with torch.no_grad():
             if mode=='SwAV':
+                '''key component'''
                 q_id = self.sinkhorn(code_id.detach())
                 q_user = self.sinkhorn(code_user.detach())
                 q_id_ii = self.sinkhorn(code_id_ii.detach())
@@ -129,6 +130,21 @@ class ILADTLoss(nn.Module):
         '''
         part code will be released after paper published
         '''
+        # key component
+        with torch.no_grad():
+            uid_scores = torch.sum(user_embeddings *
+                                   item_embeddings, dim=1)
+            uii_scores = torch.sum(user_embeddings *
+                                   image_embeddings, dim=1)
+            uit_scores = torch.sum(user_embeddings *
+                                   text_embeddings, dim=1)
+            t_i_mask = uii_scores > uit_scores
+            i_t_mask = uit_scores > uii_scores
+            i_d_mask = uid_scores > uii_scores
+            d_i_mask = uii_scores > uid_scores
+            t_d_mask = uid_scores > uit_scores
+            d_t_mask = uit_scores > uid_scores
+        
         loss = 0
         dt_loss = 0
 
